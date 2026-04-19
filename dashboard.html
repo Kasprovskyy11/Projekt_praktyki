@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dashboard</title>
+  </head>
+  <body>
+    <div id="zawartość">Ładowanie...</div>
+
+    <script>
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        window.location.href = "login.html";
+      }
+
+      fetch("http://localhost:8080/me.php", {
+        method: "GET",
+        headers: { Authorization: "Bearer " + token },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.user_id) {
+            document.getElementById("zawartość").innerText =
+              "Witaj " + data.email + "! Twoja rola: " + data.role;
+          } else {
+            localStorage.removeItem("token");
+            window.location.href = "login.html";
+          }
+        });
+    </script>
+  </body>
+</html>
