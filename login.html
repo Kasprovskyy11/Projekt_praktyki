@@ -3,17 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <title>Logowanie</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <form id="loginForm">
+    <form id="loginForm" class="form">
       <input type="email" id="email" placeholder="Email" required />
       <input type="password" id="password" placeholder="Hasło" required />
-      <button type="submit">Zaloguj</button>
+      <div id="komunikat"></div>
+      <button type="submit" id="button">Zaloguj</button>
     </form>
 
-    <div id="komunikat"></div>
-
     <script>
+      const email = document.getElementById("email");
+      const password = document.getElementById("password");
+      const button = document.getElementById("button");
+
+      function checkValues() {
+        if (email.value && password.value) {
+          button.removeAttribute("disabled");
+        } else {
+          button.setAttribute("disabled", true);
+        }
+      }
+      checkValues();
+
+      email.addEventListener("input", checkValues);
+      password.addEventListener("input", checkValues);
+
       document
         .getElementById("loginForm")
         .addEventListener("submit", async function (e) {
@@ -23,8 +39,8 @@
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              email: document.getElementById("email").value,
-              password: document.getElementById("password").value,
+              email: email.value,
+              password: password.value,
             }),
           });
 
@@ -34,7 +50,8 @@
             localStorage.setItem("token", data.token);
             document.getElementById("komunikat").innerText = "Zalogowano!";
           } else {
-            document.getElementById("komunikat").innerText = data.message;
+            document.getElementById("komunikat").innerText =
+              "Błąd logowania, spróbuj ponownie!";
           }
         });
     </script>
