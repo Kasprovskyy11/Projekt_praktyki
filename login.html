@@ -30,6 +30,21 @@
       email.addEventListener("input", checkValues);
       password.addEventListener("input", checkValues);
 
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        fetch("http://localhost:8080/me.php", {
+          method: "GET",
+          headers: { Authorization: "Bearer " + token },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.user_id) {
+              window.location.href = "dashboard.html";
+            }
+          });
+      }
+
       document
         .getElementById("loginForm")
         .addEventListener("submit", async function (e) {
@@ -49,6 +64,7 @@
           if (data.status === "success") {
             localStorage.setItem("token", data.token);
             document.getElementById("komunikat").innerText = "Zalogowano!";
+            setTimeout((window.location.href = "dashboard.html"), 1000);
           } else {
             document.getElementById("komunikat").innerText =
               "Błąd logowania, spróbuj ponownie!";
